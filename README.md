@@ -62,9 +62,17 @@ Items have a required `title` and non-negative `price`, plus optional `descripti
    npm run db:remote
    ```
 
-4. Create a Cloudflare Pages project and connect the GitHub repository. Use the `main` branch.
-5. Set the build command to `npm run build` and the build output directory to `frontend/dist`. Keep the repository root as the project root so Cloudflare can discover `functions/` and `wrangler.jsonc`.
-6. Confirm the Pages Functions D1 binding is named `DB` and uses the `mern-project-db` database. The binding is defined in `wrangler.jsonc`; redeploy after changing it.
-7. When the deployment finishes, open the Pages URL and test item creation, editing, and deletion. The API health endpoint is `<your-pages-url>/api/health`.
+4. Commit and push the updated D1 ID in `wrangler.jsonc` so the Pages build can bind to the database:
+
+   ```sh
+   git add wrangler.jsonc
+   git commit -m "Configure Cloudflare D1"
+   git push
+   ```
+
+5. Create a Cloudflare Pages project and connect the GitHub repository. Use the `main` branch.
+6. Set the build command to `npm run build` and the build output directory to `frontend/dist`. Keep the repository root as the project root so Cloudflare can discover `functions/` and `wrangler.jsonc`.
+7. Confirm the Pages Functions D1 binding is named `DB` and uses the `mern-project-db` database. The binding is defined in `wrangler.jsonc`; redeploy after changing it.
+8. When the deployment finishes, open the Pages URL and test item creation, editing, and deletion. The API health endpoint is `<your-pages-url>/api/health`.
 
 The Cloudflare Workers Free plan currently includes limited Workers/Pages Functions usage and D1 includes free daily query limits. Review the current [Workers pricing](https://developers.cloudflare.com/workers/platform/pricing/) and [D1 pricing](https://developers.cloudflare.com/d1/platform/pricing/) for exact quotas.
