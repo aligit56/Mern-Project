@@ -62,7 +62,13 @@ Items have a required `title` and non-negative `price`, plus optional `descripti
    npm run db:remote
    ```
 
-4. Commit and push the updated D1 ID in `wrangler.jsonc` so the Pages build can bind to the database:
+4. Create the Pages project for CLI deployments:
+
+   ```sh
+   npx wrangler pages project create mern-project --production-branch main
+   ```
+
+5. Commit and push the updated D1 ID in `wrangler.jsonc` so the deployment config is saved with the project:
 
    ```sh
    git add wrangler.jsonc
@@ -70,9 +76,15 @@ Items have a required `title` and non-negative `price`, plus optional `descripti
    git push
    ```
 
-5. Create a Cloudflare Pages project and connect the GitHub repository. Use the `main` branch.
-6. Set the build command to `npm run build` and the build output directory to `frontend/dist`. Keep the repository root as the project root so Cloudflare can discover `functions/` and `wrangler.jsonc`.
-7. Confirm the Pages Functions D1 binding is named `DB` and uses the `mern-project-db` database. The binding is defined in `wrangler.jsonc`; redeploy after changing it.
-8. When the deployment finishes, open the Pages URL and test item creation, editing, and deletion. The API health endpoint is `<your-pages-url>/api/health`.
+6. Build and deploy the site and Pages Functions from the project root:
+
+   ```sh
+   npm run build
+   npm run deploy
+   ```
+
+7. Open the `https://mern-project.pages.dev` URL and test item creation, editing, and deletion. The API health endpoint is `https://mern-project.pages.dev/api/health`.
+
+This project was created for Wrangler CLI deployments. To publish future changes, push them to GitHub and run `npm run build` followed by `npm run deploy`; a Git-connected automatic deployment is not configured.
 
 The Cloudflare Workers Free plan currently includes limited Workers/Pages Functions usage and D1 includes free daily query limits. Review the current [Workers pricing](https://developers.cloudflare.com/workers/platform/pricing/) and [D1 pricing](https://developers.cloudflare.com/d1/platform/pricing/) for exact quotas.

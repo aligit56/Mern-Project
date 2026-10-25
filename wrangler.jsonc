@@ -1,14 +1,14 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "mern-project",
-  "pages_build_output_dir": "./frontend/dist",
-  "compatibility_date": "2026-10-25",
-  "d1_databases": [
-    {
-      "binding": "DB",
-      "database_name": "mern-project-db",
-      "database_id": "00000000-0000-0000-0000-000000000000",
-      "migrations_dir": "migrations"
-    }
-  ]
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "mern-project",
+	"pages_build_output_dir": "./frontend/dist",
+	"compatibility_date": "2026-10-25",
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "mern-project-db",
+			"database_id": "2eccd054-a69c-407c-962b-5aac793a492a",
+			"migrations_dir": "migrations"
+		}
+	]
 }
