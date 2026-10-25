@@ -1,37 +1,35 @@
-# Mern Project
+# Item Inventory CRUD App
 
-A full-stack item inventory app with a React/Vite frontend and an Express API. It supports creating, listing, editing, and deleting items without reloading the page.
+A full-stack item inventory app with a React/Vite frontend and a Cloudflare Pages Functions API backed by D1 (SQLite). It supports creating, listing, editing, and deleting items without reloading the page.
 
-> This version stores items in `backend/data/items.json` and does not require MongoDB. It is suitable for local development and demos. For deployment, use a host with a persistent disk and set `ITEMS_FILE_PATH` to a file on that disk; ephemeral hosting can reset JSON data when the app restarts.
+This deployment uses Cloudflare D1 for persistent hosted storage and does not require a local MongoDB server. The backend is Cloudflare Pages Functions, not Express/MongoDB.
 
 ## Requirements
 
 - Node.js 20 or newer
 - npm
+- A free Cloudflare account
 
-## Run locally
+## Run locally with Cloudflare Pages
 
-Open two terminals from the project directory.
+From the project root:
 
-Terminal 1 — backend:
+npm install
+
+Create a local D1 database and apply its schema:
+
+```sh
+npm run db:local
+```
+
+Build the frontend and start the local Pages server (serves both UI and API):
 
 ```powershell
-cd backend
-npm install
+npm run build
 npm run dev
 ```
 
-The API listens on `http://localhost:5000`. Check `http://localhost:5000/api/health`.
-
-Terminal 2 — frontend:
-
-```powershell
-cd frontend
-npm install
-npm run dev
-```
-
-Open the URL Vite prints, usually `http://localhost:5173`.
+Open the local URL printed by Wrangler, usually `http://localhost:8788`.
 
 ## API
 
@@ -46,8 +44,27 @@ Open the URL Vite prints, usually `http://localhost:5173`.
 
 Items have a required `title` and non-negative `price`, plus optional `description` and `category`.
 
-## Configuration
+## Deploy to Cloudflare Pages
 
-The API uses port `5000` by default. Set `PORT` to change it. The frontend uses `http://localhost:5000/api/items` by default; set `VITE_API_URL` in `frontend/.env` if the API is hosted elsewhere.
+1. Push this repository to GitHub and sign in to the [Cloudflare Dashboard](https://dash.cloudflare.com/).
+2. From the project root, log Wrangler into your Cloudflare account and create the D1 database. Wrangler writes its ID into `wrangler.jsonc`:
 
-For persistent JSON storage on a host that provides a mounted disk, set `ITEMS_FILE_PATH` to a path on that disk, such as `/var/data/items.json`.
+   ```sh
+   npx wrangler login
+   npx wrangler d1 create mern-project-db --binding DB --update-config
+   ```
+
+   If you already created the database in the dashboard, copy its ID into `wrangler.jsonc`, replacing the all-zero `database_id` placeholder.
+
+3. Apply the schema migration to the remote D1 database:
+
+   ```sh
+   npm run db:remote
+   ```
+
+4. Create a Cloudflare Pages project and connect the GitHub repository. Use the `main` branch.
+5. Set the build command to `npm run build` and the build output directory to `frontend/dist`. Keep the repository root as the project root so Cloudflare can discover `functions/` and `wrangler.jsonc`.
+6. Confirm the Pages Functions D1 binding is named `DB` and uses the `mern-project-db` database. The binding is defined in `wrangler.jsonc`; redeploy after changing it.
+7. When the deployment finishes, open the Pages URL and test item creation, editing, and deletion. The API health endpoint is `<your-pages-url>/api/health`.
+
+The Cloudflare Workers Free plan currently includes limited Workers/Pages Functions usage and D1 includes free daily query limits. Review the current [Workers pricing](https://developers.cloudflare.com/workers/platform/pricing/) and [D1 pricing](https://developers.cloudflare.com/d1/platform/pricing/) for exact quotas.

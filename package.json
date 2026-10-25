@@ -1,0 +1,26 @@
+{
+  "name": "mern-project",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "frontend"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "npm run build --workspace frontend",
+    "dev": "wrangler pages dev frontend/dist",
+    "db:local": "wrangler d1 migrations apply mern-project-db --local",
+    "db:remote": "wrangler d1 migrations apply mern-project-db --remote",
+    "deploy": "wrangler pages deploy frontend/dist --project-name=mern-project"
+  },
+  "devDependencies": {
+    "wrangler": "4.152.0"
+  },
+  "overrides": {
+    "miniflare": {
+      "undici": "^7.30.1"
+    }
+  }
+}
